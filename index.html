@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>博客文章转 Markdown 下载器</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", sans-serif;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      line-height: 1.6;
+      color: #333;
+      background-color: #fafafa;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #45a049;
+    }
+    .btn-large {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      font-size: 18px;
+      margin: 15px 0;
+    }
+    input[type="url"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 16px;
+    }
+    ul {
+      padding-left: 20px;
+      margin: 15px 0;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    .note {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-top: 20px;
+    }
+    footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #777;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 博客文章转 Markdown</h1>
+
+  <div class="card">
+    <h2>🚀 一键安装脚本</h2>
+    <p>请先安装浏览器扩展 <strong>Tampermonkey</strong>（油猴），再安装我们的脚本：</p>
+    <a href="https://www.tampermonkey.net/" target="_blank" class="btn">1️⃣ 安装 Tampermonkey</a>
+    <a href="https://greasyfork.org/scripts/472996" target="_blank" class="btn btn-large">2️⃣ 安装「文章保存为 Word/Markdown」脚本</a>
+    <p style="text-align:center; margin-top:10px; font-size:14px; color:#666;">
+      （支持 Chrome / Edge / Firefox）
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>📥 粘贴链接下载</h2>
+    <p>安装完成后，在下方输入文章链接，点击按钮即可跳转并自动下载 Markdown：</p>
+    <input type="url" id="articleUrl" placeholder="例如：https://juejin.cn/post/123456" />
+    <button class="btn btn-large" onclick="goToArticle()">跳转并下载</button>
+
+    <div class="note">
+      <strong>✅ 支持的网站：</strong><br/>
+      CSDN、简书、掘金、知乎专栏、博客园、微信公众号、B站专栏、思否、51CTO、阿里云、腾讯云、华为云、吾爱破解、脚本之家、百家号、百度经验等。
+    </div>
+  </div>
+
+  <footer>
+    脚本作者：<a href="https://waahah.xyz/" target="_blank">waahah</a> | 仅限学习使用，请尊重版权。
+  </footer>
+
+  <script>
+    function goToArticle() {
+      const url = document.getElementById('articleUrl').value.trim();
+      if (!url) {
+        alert('请输入文章链接');
+        return;
+      }
+
+      try {
+        new URL(url);
+      } catch (e) {
+        alert('链接格式不正确');
+        return;
+      }
+
+      // 检查是否为支持的域名
+      const supportedDomains = [
+        'blog.csdn.net',
+        'www.jianshu.com',
+        'juejin.cn',
+        'zhuanlan.zhihu.com',
+        'www.cnblogs.com',
+        'mp.weixin.qq.com',
+        'www.bilibili.com',
+        'segmentfault.com',
+        'cloud.tencent.com',
+        'developer.aliyun.com',
+        'huaweicloud.csdn.net',
+        'baijiahao.baidu.com',
+        'jingyan.baidu.com',
+        'www.52pojie.cn',
+        'www.jb51.net',
+        'blog.51cto.com'
+      ];
+
+      const urlObj = new URL(url);
+      const host = urlObj.hostname;
+
+      const isSupported = supportedDomains.some(domain => 
+        host === domain || host.endsWith('.' + domain)
+      );
+
+      if (!isSupported) {
+        if (!confirm('⚠️ 当前链接可能不支持自动下载。是否仍要跳转？')) {
+          return;
+        }
+      }
+
+      window.open(url, '_blank');
+
+      // 友好提示
+      setTimeout(() => {
+        alert('✅ 已跳转到文章页面。\n\n如果未自动下载，请确认：\n1. 已安装 Tampermonkey\n2. 已安装本脚本\n3. 页面完全加载完成');
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
